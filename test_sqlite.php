@@ -1,25 +1,24 @@
 <?php
 try {
-    $pdo = new PDO("sqlite:database/ecobuddy.db");
+    // Connect to the database
+    $dbPath = __DIR__ . '/database/ecobuddy.db';
+    $pdo = new PDO("sqlite:$dbPath");
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // Insert sample data
-    $sql = "
-    INSERT INTO users (username, password, user_type)
-    VALUES
-        ('admin', 'adminpassword', 'manager'),
-        ('lee', 'lee123password', 'user');
+    // Define user data with hashed passwords
+    $users = [
+        ['username' => 'admin', 'password' => password_hash('adminpassword123', PASSWORD_BCRYPT), 'user_type' => 'manager'],
+        ['username' => 'lee', 'password' => password_hash('lee123password', PASSWORD_BCRYPT), 'user_type' => 'user']
+    ];
 
-    INSERT INTO eco_facilities (title, category, description, location, latitude, longitude, status, image_path)
-    VALUES
-        ('Recycling Bin', 'Waste Management', 'Recycling bin for plastics and paper', '123 Green St', 40.7128, -74.0060, 'Active', '/images/recycle.jpg'),
-        ('E-Bike Station', 'Transportation', 'Station for electric bikes', '456 Eco Blvd', 40.7306, -73.9352, 'Under Maintenance', '/images/ebike.jpg');
-    ";
+    // Insert users into the database
+    $stmt = $pdo->prepare("INSERT INTO users (username, password, user_type) VALUES (:username, :password, :user_type)");
+    foreach ($users as $user) {
+        $stmt->execute($user);
+    }
 
-    $pdo->exec($sql);
-
-    echo "Sample data inserted successfully!";
+    echo "Users inserted successfully!";
 } catch (PDOException $e) {
-    echo "Error: " . $e->getMessage();
+    echo "Error inserting users: " . $e->getMessage();
 }
 ?>
