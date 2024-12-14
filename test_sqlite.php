@@ -5,20 +5,41 @@ try {
     $pdo = new PDO("sqlite:$dbPath");
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // Define user data with hashed passwords
-    $users = [
-        ['username' => 'admin', 'password' => password_hash('adminpassword123', PASSWORD_BCRYPT), 'user_type' => 'manager'],
-        ['username' => 'lee', 'password' => password_hash('lee123password', PASSWORD_BCRYPT), 'user_type' => 'user']
+    // Define dummy data for eco facilities
+    $facilities = [
+        [
+            'title' => 'Recycling Bin',
+            'category' => 'Waste Management',
+            'description' => 'Recycling bin for plastics and paper',
+            'location' => '123 Green St',
+            'latitude' => 40.7128,
+            'longitude' => -74.0060,
+            'status' => 'Active',
+            'image_path' => '/images/recycle.jpg'
+        ],
+        [
+            'title' => 'E-Bike Station',
+            'category' => 'Transportation',
+            'description' => 'Station for electric bikes',
+            'location' => '456 Eco Blvd',
+            'latitude' => 40.7306,
+            'longitude' => -73.9352,
+            'status' => 'Under Maintenance',
+            'image_path' => '/images/ebike.jpg'
+        ]
     ];
 
-    // Insert users into the database
-    $stmt = $pdo->prepare("INSERT INTO users (username, password, user_type) VALUES (:username, :password, :user_type)");
-    foreach ($users as $user) {
-        $stmt->execute($user);
+    // Insert facilities into the database
+    $stmt = $pdo->prepare("
+        INSERT INTO eco_facilities (title, category, description, location, latitude, longitude, status, image_path) 
+        VALUES (:title, :category, :description, :location, :latitude, :longitude, :status, :image_path)
+    ");
+    foreach ($facilities as $facility) {
+        $stmt->execute($facility);
     }
 
-    echo "Users inserted successfully!";
+    echo "Eco facilities inserted successfully!";
 } catch (PDOException $e) {
-    echo "Error inserting users: " . $e->getMessage();
+    echo "Error inserting eco facilities: " . $e->getMessage();
 }
 ?>
