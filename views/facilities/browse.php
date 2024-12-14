@@ -5,6 +5,17 @@
 </head>
 <body>
 <h1>Eco Facilities</h1>
+
+<?php
+// Check if the user is logged in
+if (isset($_SESSION['username'])) {
+    echo "<p>Welcome, " . htmlspecialchars($_SESSION['username']) . "!</p>";
+    echo '<a href="/ecoBuddy/index.php?view=logout">Logout</a>';
+} else {
+    echo '<p>You are not logged in. <a href="/ecoBuddy/index.php?view=login">Login here</a>.</p>';
+}
+?>
+
 <?php if (!empty($facilities)) : ?>
     <?php foreach ($facilities as $facility) : ?>
         <div>

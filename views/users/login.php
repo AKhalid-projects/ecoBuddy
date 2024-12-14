@@ -4,9 +4,14 @@
     <title>Login</title>
 </head>
 <body>
-<form method="POST" action="./index.php">
-    <input type="text" name="username" placeholder="Username" required />
-    <input type="password" name="password" placeholder="Password" required />
+<h1>Login</h1>
+<form method="POST" action="/ecoBuddy/index.php">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required>
+    <br>
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required>
+    <br>
     <button type="submit" name="login">Login</button>
 </form>
 </body>

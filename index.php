@@ -19,6 +19,10 @@ if (isset($_GET['view'])) {
         $facilityController = new FacilityController($facilityModel);
         $facilities = $facilityController->browseFacilities();
         include './views/facilities/browse.php';
+    }elseif  ($_GET['view'] === 'logout') {
+        session_destroy();
+        header("Location: /ecoBuddy/index.php?view=login");
+        exit;
     } else {
         http_response_code(404);
         include './views/404.php';
