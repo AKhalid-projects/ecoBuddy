@@ -1,7 +1,7 @@
 <?php
 try {
     // Use an absolute path to avoid path issues
-    $dbPath = __DIR__ . '/../database/ecobuddy.db';
+    $dbPath = __DIR__ . '/../database/ecobuddy.sqlite';
 
     // Establish the database connection
     $pdo = new PDO("sqlite:$dbPath");

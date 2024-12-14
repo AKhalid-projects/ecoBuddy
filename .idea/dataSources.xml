@@ -8,5 +8,12 @@
       <jdbc-url>jdbc:sqlite:C:\xampp\htdocs\ecoBuddy\database\ecobuddy.db</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="ecobuddy.sqlite" uuid="0453c277-1f62-4e78-8dd4-29af0cb30c2f">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/database/ecobuddy.sqlite</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

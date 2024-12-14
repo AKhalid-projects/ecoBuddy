@@ -1,5 +1,4 @@
 <?php
-session_start();
 if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'manager') {
     header("Location: /ecoBuddy/index.php?view=login");
     exit;

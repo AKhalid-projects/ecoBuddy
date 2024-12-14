@@ -13,6 +13,7 @@ if (isset($_SESSION['username'])) {
     echo '<a href="/ecoBuddy/index.php?view=logout">Logout</a>';
 } else {
     echo '<p>You are not logged in. <a href="/ecoBuddy/index.php?view=login">Login here</a>.</p>';
+    exit; // Stop rendering the page for non-logged-in users
 }
 ?>
 
@@ -20,13 +21,34 @@ if (isset($_SESSION['username'])) {
     <?php foreach ($facilities as $facility) : ?>
         <div>
             <h2><?php echo htmlspecialchars($facility['title']); ?></h2>
-            <p><?php echo htmlspecialchars($facility['description']); ?></p>
-            <p>Status: <?php echo htmlspecialchars($facility['status']); ?></p>
-            <p>Location: <?php echo htmlspecialchars($facility['location']); ?></p>
+            <p><strong>Category:</strong> <?php echo htmlspecialchars($facility['category_name']); ?></p>
+            <p><strong>Description:</strong> <?php echo htmlspecialchars($facility['description']); ?></p>
+            <p><strong>Status:</strong>
+                <?php if (!empty($facility['statusComment'])) : ?>
+                    <?php echo htmlspecialchars($facility['statusComment']); ?>
+                <?php else : ?>
+                    No status available
+                <?php endif; ?>
+            </p>
+            <p><strong>Location:</strong>
+                <?php echo htmlspecialchars($facility['houseNumber'] . ' ' . $facility['streetName'] . ', ' . $facility['county'] . ', ' . $facility['town'] . ' - ' . $facility['postcode']); ?>
+            </p>
+            <p><strong>Coordinates:</strong>
+                <?php
+                echo !empty($facility['lat']) && !empty($facility['lng'])
+                    ? htmlspecialchars($facility['lat'] . ', ' . $facility['lng'])
+                    : 'Coordinates not available';
+                ?>
+            </p>
+            <p><strong>Contributor:</strong> <?php echo htmlspecialchars($facility['contributor_name']); ?></p>
         </div>
+        <hr>
     <?php endforeach; ?>
 <?php else : ?>
     <p>No facilities found.</p>
+    <?php if ($_SESSION['role'] === 'Manager') : ?>
+        <a href="/ecoBuddy/index.php?view=add_facility">Add New Facility</a>
+    <?php endif; ?>
 <?php endif; ?>
 </body>
 </html>

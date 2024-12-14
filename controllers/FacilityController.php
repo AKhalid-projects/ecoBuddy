@@ -12,7 +12,14 @@ class FacilityController {
 
     public function createFacility($data) {
         $this->facilityModel->createFacility($data);
-        header("Location: /ecoBuddy/views/facilities/browse.php");
+    }
+
+    public function updateFacility($id, $data) {
+        $this->facilityModel->updateFacility($id, $data);
+    }
+
+    public function deleteFacility($id) {
+        $this->facilityModel->deleteFacility($id);
     }
 }
 ?>
