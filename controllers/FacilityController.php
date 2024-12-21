@@ -6,9 +6,10 @@ class FacilityController {
         $this->facilityModel = $facilityModel;
     }
 
-    public function browseFacilities() {
-        return $this->facilityModel->getAllFacilities();
+    public function browseFacilities($search = '', $category = null) {
+        return $this->facilityModel->searchFacilities($search, $category);
     }
+
 
     public function createFacility($data) {
         $this->facilityModel->createFacility($data);
@@ -21,5 +22,15 @@ class FacilityController {
     public function deleteFacility($id) {
         $this->facilityModel->deleteFacility($id);
     }
+
+    public function getPaginatedFacilities($page, $limit, $search = '', $category = null) {
+        $offset = ($page - 1) * $limit;
+        return $this->facilityModel->getPaginatedFacilities($offset, $limit, $search, $category);
+    }
+
+    public function getTotalFacilities($search = '', $category = null) {
+        return $this->facilityModel->getTotalFacilities($search, $category);
+    }
+
 }
 ?>

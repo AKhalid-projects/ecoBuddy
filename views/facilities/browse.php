@@ -1,3 +1,12 @@
+<?php
+// Pagination setup
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$limit = 6; // Number of facilities per page
+$total = $facilityController->getTotalFacilities($search, $category);
+$facilities = $facilityController->getPaginatedFacilities($page, $limit, $search, $category);
+
+$totalPages = ceil($total / $limit);
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,10 +25,37 @@
         echo '<a href="/ecoBuddy/index.php?view=logout" class="btn btn-danger mb-3">Logout</a>';
     } else {
         echo '<div class="alert alert-warning">You are not logged in. <a href="/ecoBuddy/index.php?view=login" class="alert-link">Login here</a>.</div>';
-        exit; // Stop rendering the page for non-logged-in users
+        exit;
     }
     ?>
 
+    <!-- Search Form -->
+    <form method="GET" action="/ecoBuddy/index.php" class="mb-4">
+        <input type="hidden" name="view" value="browse">
+        <div class="row g-3">
+            <!-- Search Bar -->
+            <div class="col-md-6">
+                <input type="text" name="search" class="form-control" placeholder="Search by title or description" value="<?php echo htmlspecialchars($_GET['search'] ?? ''); ?>">
+            </div>
+            <!-- Category Filter -->
+            <div class="col-md-4">
+                <select name="category" class="form-select">
+                    <option value="">All Categories</option>
+                    <?php foreach ($categories as $category): ?>
+                        <option value="<?php echo htmlspecialchars($category['id']); ?>" <?php echo (isset($_GET['category']) && $_GET['category'] == $category['id']) ? 'selected' : ''; ?>>
+                            <?php echo htmlspecialchars($category['name']); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <!-- Submit Button -->
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">Search</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Facilities Display -->
     <?php if (!empty($facilities)) : ?>
         <div class="row">
             <?php foreach ($facilities as $facility) : ?>
@@ -48,13 +84,34 @@
                 </div>
             <?php endforeach; ?>
         </div>
+        <!-- Pagination -->
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                <?php if ($page > 1): ?>
+                    <li class="page-item">
+                        <a class="page-link" href="?view=browse&page=<?php echo $page - 1; ?>" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                <?php endif; ?>
+
+                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                    <li class="page-item <?php echo $i === $page ? 'active' : ''; ?>">
+                        <a class="page-link" href="?view=browse&page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                    </li>
+                <?php endfor; ?>
+
+                <?php if ($page < $totalPages): ?>
+                    <li class="page-item">
+                        <a class="page-link" href="?view=browse&page=<?php echo $page + 1; ?>" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                <?php endif; ?>
+            </ul>
+        </nav>
     <?php else : ?>
-        <p class="text-center">No facilities found.</p>
-        <?php if ($_SESSION['role'] === 'Manager') : ?>
-            <div class="text-center">
-                <a href="/ecoBuddy/index.php?view=add_facility" class="btn btn-primary">Add New Facility</a>
-            </div>
-        <?php endif; ?>
+        <div class="alert alert-warning text-center">No facilities found. Try adjusting your search criteria.</div>
     <?php endif; ?>
 </div>
 

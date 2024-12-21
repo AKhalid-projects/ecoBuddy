@@ -40,20 +40,9 @@ class Facility {
         LEFT JOIN ecoUser ON ecoFacilities.contributor = ecoUser.id
         WHERE ecoFacilities.id = :id
     ");
-        if (!$stmt) {
-            die("Error in query preparation: " . implode(":", $this->pdo->errorInfo()));
-        }
-
         $stmt->execute([':id' => $id]);
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if (!$result) {
-            die("Facility with ID $id not found.");
-        }
-
-        return $result;
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-
 
     // Create a new facility
     public function createFacility($data) {
@@ -105,5 +94,95 @@ class Facility {
             ':statusComment' => $statusComment
         ]);
     }
+
+    public function searchFacilities($search = '', $category = null) {
+        $query = "
+        SELECT ecoFacilities.*, 
+               ecoCategories.name AS category_name, 
+               ecoUser.username AS contributor_name,
+               (SELECT statusComment 
+                FROM ecoFacilityStatus 
+                WHERE facilityId = ecoFacilities.id 
+                ORDER BY ROWID DESC LIMIT 1) AS statusComment
+        FROM ecoFacilities
+        LEFT JOIN ecoCategories ON ecoFacilities.category = ecoCategories.id
+        LEFT JOIN ecoUser ON ecoFacilities.contributor = ecoUser.id
+        WHERE (ecoFacilities.title LIKE :search OR ecoFacilities.description LIKE :search)
+    ";
+
+        if ($category) {
+            $query .= " AND ecoFacilities.category = :category";
+        }
+
+        $query .= " ORDER BY ecoFacilities.title ASC";
+
+        $stmt = $this->pdo->prepare($query);
+        $params = [
+            ':search' => '%' . $search . '%',
+        ];
+        if ($category) {
+            $params[':category'] = $category;
+        }
+
+        $stmt->execute($params);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    public function getPaginatedFacilities($offset, $limit, $search = '', $category = null) {
+        $query = "
+        SELECT ecoFacilities.*, 
+               ecoCategories.name AS category_name, 
+               ecoUser.username AS contributor_name,
+               (SELECT statusComment 
+                FROM ecoFacilityStatus 
+                WHERE facilityId = ecoFacilities.id 
+                ORDER BY ROWID DESC LIMIT 1) AS statusComment
+        FROM ecoFacilities
+        LEFT JOIN ecoCategories ON ecoFacilities.category = ecoCategories.id
+        LEFT JOIN ecoUser ON ecoFacilities.contributor = ecoUser.id
+        WHERE (ecoFacilities.title LIKE :search OR ecoFacilities.description LIKE :search)
+    ";
+        if ($category) {
+            $query .= " AND ecoFacilities.category = :category";
+        }
+        $query .= " ORDER BY ecoFacilities.title ASC LIMIT :offset, :limit";
+
+        $stmt = $this->pdo->prepare($query);
+        $params = [
+            ':search' => '%' . $search . '%',
+            ':offset' => $offset,
+            ':limit' => $limit,
+        ];
+        if ($category) {
+            $params[':category'] = $category;
+        }
+
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute($params);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getTotalFacilities($search = '', $category = null) {
+        $query = "
+        SELECT COUNT(*) as total 
+        FROM ecoFacilities
+        WHERE (title LIKE :search OR description LIKE :search)
+    ";
+        if ($category) {
+            $query .= " AND category = :category";
+        }
+
+        $stmt = $this->pdo->prepare($query);
+        $params = [
+            ':search' => '%' . $search . '%',
+        ];
+        if ($category) {
+            $params[':category'] = $category;
+        }
+
+        $stmt->execute($params);
+        return $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+    }
 }
-?>

@@ -23,7 +23,10 @@ if (isset($_GET['view'])) {
         header("Location: /ecoBuddy/index.php?view=login");
         exit;
     } elseif ($view === 'browse') {
-        $facilities = $facilityController->browseFacilities();
+        $search = isset($_GET['search']) ? $_GET['search'] : '';
+        $category = isset($_GET['category']) ? $_GET['category'] : null;
+        $categories = $facilityModel->getAllCategories(); // Fetch categories
+        $facilities = $facilityController->browseFacilities($search, $category);
         include './views/facilities/browse.php';
     } elseif (isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'manager') {
         if ($view === 'add_facility') {
@@ -48,11 +51,21 @@ if (isset($_GET['view'])) {
             header("Location: /ecoBuddy/index.php?view=dashboard");
             exit;
         } elseif ($view === 'dashboard') {
+            $search = isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '';
+            $category = isset($_GET['category']) ? htmlspecialchars($_GET['category']) : null;
+            $categories = $facilityModel->getAllCategories(); // Fetch categories
+            $facilities = $facilityController->browseFacilities($search, $category); // Get filtered facilities
             include './views/manager/dashboard.php';
         }
+
     } else {
-        http_response_code(404);
-        include './views/404.php';
+        http_response_code(404); // Set HTTP response code to 404
+        $file = './views/404.php';
+        if (file_exists($file)) {
+            include $file;
+        } else {
+            echo "<h1>404 - Page Not Found</h1><p>The 404 page is missing.</p>";
+        }
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['login'])) {
@@ -96,6 +109,35 @@ if (isset($_GET['view'])) {
         exit;
     }
 } else {
-    echo "Welcome to EcoBuddy! <a href='?view=browse'>Browse Facilities</a> | <a href='?view=login'>Login</a>";
+    ?>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>EcoBuddy Home</title>
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+    <body>
+    <div class="container mt-5">
+        <div class="jumbotron text-center">
+            <h1 class="display-4">Welcome to EcoBuddy!</h1>
+            <p class="lead">Your one-stop solution for managing eco facilities.</p>
+            <hr class="my-4">
+            <p>Explore facilities, manage eco-friendly projects, and more.</p>
+            <div class="d-flex justify-content-center">
+                <a href="?view=browse" class="btn btn-primary btn-lg mx-2" role="button">Browse Facilities</a>
+                <a href="?view=login" class="btn btn-success btn-lg mx-2" role="button">Login</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+    </html>
+    <?php
 }
+
 ?>
