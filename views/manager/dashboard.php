@@ -2,8 +2,13 @@
 // Pagination setup
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $limit = 6; // Number of facilities per page
-$total = $facilityController->getTotalFacilities($search, $category);
-$facilities = $facilityController->getPaginatedFacilities($page, $limit, $search, $category);
+
+$location = $_GET['location'] ?? null;
+$status = $_GET['status'] ?? null;
+
+$total = $facilityController->getTotalFacilities($search, $category, $location, $status);
+$facilities = $facilityController->getPaginatedFacilities($page, $limit, $search, $category, $location, $status);
+
 
 $totalPages = ceil($total / $limit);
 ?>
@@ -37,7 +42,7 @@ $totalPages = ceil($total / $limit);
     <!-- Search Form -->
     <form method="GET" action="/ecoBuddy/index.php" class="mb-4">
         <input type="hidden" name="view" value="dashboard">
-        <div class="row g-3">
+        <div class="row g-3 justify-content-center">
             <div class="col-md-6">
                 <input type="text" name="search" class="form-control" placeholder="Search by title or description"
                        value="<?php echo htmlspecialchars($_GET['search'] ?? ''); ?>">
@@ -51,6 +56,18 @@ $totalPages = ceil($total / $limit);
                             <?php echo htmlspecialchars($category['name']); ?>
                         </option>
                     <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <input type="text" name="location" class="form-control" placeholder="Search by location (e.g., town, county, postcode)"
+                       value="<?php echo htmlspecialchars($_GET['location'] ?? ''); ?>">
+            </div>
+            <div class="col-md-4">
+                <select name="status" class="form-select">
+                    <option value="">All Statuses</option>
+                    <option value="Active" <?php echo (isset($_GET['status']) && $_GET['status'] == 'Active') ? 'selected' : ''; ?>>Active</option>
+                    <option value="Under Maintenance" <?php echo (isset($_GET['status']) && $_GET['status'] == 'Under Maintenance') ? 'selected' : ''; ?>>Under Maintenance</option>
+                    <option value="Inactive" <?php echo (isset($_GET['status']) && $_GET['status'] == 'Inactive') ? 'selected' : ''; ?>>Inactive</option>
                 </select>
             </div>
             <div class="col-md-2">
