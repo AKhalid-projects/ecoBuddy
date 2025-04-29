@@ -80,5 +80,35 @@ class FacilityController {
         return $this->facilityModel->getTotalFacilities($search, $category);
     }
 
+
+    /**
+     * Fetch all facilities and output them as JSON for AJAX map loading.
+     */
+    public function getFacilitiesJson() {
+        $facilities = $this->facilityModel->getAllFacilities();
+        header('Content-Type: application/json');
+        echo json_encode($facilities);
+    }
+
+    /**
+     * Update the status of a facility via AJAX request.
+     */
+    public function updateStatus() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $facilityId = $_POST['facilityId'] ?? null;
+            $statusComment = $_POST['statusComment'] ?? null;
+
+            if ($facilityId && $statusComment) {
+                $this->facilityModel->updateFacilityStatus($facilityId, $statusComment);
+                header('Content-Type: application/json');
+                echo json_encode(['status' => 'success']);
+            } else {
+                header('Content-Type: application/json');
+                echo json_encode(['status' => 'error', 'message' => 'Invalid input.']);
+            }
+        }
+    }
+
+
 }
 ?>

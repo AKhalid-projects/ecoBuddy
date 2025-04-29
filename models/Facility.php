@@ -306,4 +306,22 @@ class Facility {
         $stmt->execute($params); // Execute the query.
         return $stmt->fetch(PDO::FETCH_ASSOC)['total']; // Return the total count of facilities.
     }
+
+    /**
+     * Update facility status by inserting a new status comment associated with a user.
+     *
+     * @param int $facilityId Facility ID.
+     * @param string $statusComment The status comment.
+     */
+    public function updateFacilityStatus($facilityId, $statusComment) {
+        $stmt = $this->pdo->prepare("
+            INSERT INTO ecoFacilityStatus (facilityId, statusComment)
+            VALUES (:facilityId, :statusComment)
+        ");
+        $stmt->execute([
+            ':facilityId' => $facilityId,
+            ':statusComment' => $statusComment
+        ]);
+    }
+
 }

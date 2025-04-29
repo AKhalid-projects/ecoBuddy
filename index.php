@@ -37,6 +37,16 @@ if (isset($_GET['view'])) {
         $facilities = $facilityController->browseFacilities($search, $category); // Fetch facilities based on search and category
         include './views/facilities/browse.php'; // Include the browse facilities view
     }
+    // Route: AJAX update facility status
+    elseif ($view === 'update_status') {
+        $facilityController->updateStatus();
+        exit;
+    }
+    // Route: AJAX get facilities for map
+    elseif ($view === 'facilities_json') {
+        $facilityController->getFacilitiesJson();
+        exit;
+    }
     // Route: Manager-only views
     elseif (isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'manager') {
         // Route: Add new facility form
