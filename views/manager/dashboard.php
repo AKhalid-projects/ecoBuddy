@@ -85,8 +85,11 @@ $totalPages = ceil($total / $limit);
         </div>
     </form>
 
+    <!-- Map -->
+    <div id="map" style="height: 500px; width: 100%; margin-bottom: 30px;"></div>
+
     <!-- Facilities Display -->
-    <?php if (!empty($facilities)) : ?> <!-- Check if there are facilities to display -->
+    <?php if (!empty($facilities)) : ?>
         <div class="row">
             <?php foreach ($facilities as $facility) : ?> <!-- Loop through each facility -->
                 <div class="col-md-4 mb-4">
@@ -162,5 +165,63 @@ $totalPages = ceil($total / $limit);
 
 <!-- Bootstrap JS for interactive components -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Leaflet CSS/JS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<style>
+    .user-marker {
+        background: none;
+        border: none;
+    }
+    .user-marker div {
+        box-shadow: 0 0 4px rgba(0,0,0,0.5);
+    }
+</style>
+<script>
+    var map = L.map('map').setView([26.2285, 50.5860], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+    // Center map on user
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+            var userLat = position.coords.latitude;
+            var userLng = position.coords.longitude;
+            map.setView([userLat, userLng], 13);
+            var userMarker = L.marker([userLat, userLng], {
+                icon: L.divIcon({
+                    className: 'user-marker',
+                    html: '<div style="background-color: #4CAF50; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white;"></div>'
+                })
+            }).addTo(map);
+            userMarker.bindPopup('Your current location');
+        }, error => {
+            console.error('Error getting user location:', error);
+        });
+    }
+    // Load facilities and add markers
+    fetch('/ecoBuddy/index.php?view=facilities_json')
+        .then(response => response.json())
+        .then(facilities => {
+            facilities.forEach(facility => {
+                if (facility.lat && facility.lng) {
+                    var marker = L.marker([parseFloat(facility.lat), parseFloat(facility.lng)]).addTo(map);
+                    var popupContent = `
+                        <div class='facility-popup'>
+                            <h5>${facility.title}</h5>
+                            <p><strong>Category:</strong> ${facility.category_name}</p>
+                            <p><strong>Status:</strong> ${facility.statusComment || 'No status available'}</p>
+                            <p><strong>Location:</strong> ${facility.houseNumber} ${facility.streetName}, ${facility.town}</p>
+                        </div>
+                    `;
+                    marker.bindPopup(popupContent);
+                }
+            });
+        })
+        .catch(error => {
+            console.error('Error loading facilities:', error);
+            alert('Error loading facility locations. Please try again later.');
+        });
+</script>
 </body>
 </html>
