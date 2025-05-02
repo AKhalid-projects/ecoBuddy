@@ -33,18 +33,18 @@ $totalPages = ceil($total / $limit);
 
     <!-- Logout Button -->
     <div class="text-center mb-4">
-        <a href="/ecoBuddy/index.php?view=logout" class="btn btn-danger">Logout</a> <!-- Logout link -->
+        <a href="index.php?view=logout" class="btn btn-danger">Logout</a> <!-- Logout link -->
     </div>
 
     <!-- Add Facility Button -->
     <div class="text-center mb-4">
-        <a href="/ecoBuddy/index.php?view=add_facility" class="btn btn-primary">
+        <a href="index.php?view=add_facility" class="btn btn-primary">
             <i class="fas fa-plus"></i> Add New Facility <!-- Button for adding a new facility -->
         </a>
     </div>
 
     <!-- Search Form for filtering facilities -->
-    <form method="GET" action="/ecoBuddy/index.php" class="mb-4">
+    <form method="GET" action="index.php" class="mb-4">
         <input type="hidden" name="view" value="dashboard"> <!-- Hidden input to keep the view as dashboard -->
         <div class="row g-3 justify-content-center">
             <div class="col-md-6">
@@ -114,10 +114,10 @@ $totalPages = ceil($total / $limit);
                             </p>
                             <!-- Edit and Delete buttons -->
                             <div class="d-flex justify-content-start gap-4">
-                                <a href="/ecoBuddy/index.php?view=edit_facility&id=<?php echo $facility['id']; ?>" class="btn btn-warning btn-sm">
+                                <a href="index.php?view=edit_facility&id=<?php echo $facility['id']; ?>" class="btn btn-warning btn-sm">
                                     Edit
                                 </a>
-                                <a href="/ecoBuddy/index.php?view=delete_facility&id=<?php echo $facility['id']; ?>" class="btn btn-danger btn-sm"
+                                <a href="index.php?view=delete_facility&id=<?php echo $facility['id']; ?>" class="btn btn-danger btn-sm"
                                    onclick="return confirm('Are you sure you want to delete this facility?');">
                                     Delete
                                 </a>
@@ -200,7 +200,7 @@ $totalPages = ceil($total / $limit);
         });
     }
     // Load facilities and add markers
-    fetch('/ecoBuddy/index.php?view=facilities_json')
+    fetch('index.php?view=facilities_json')
         .then(response => response.json())
         .then(facilities => {
             facilities.forEach(facility => {

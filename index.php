@@ -26,7 +26,7 @@ if (isset($_GET['view'])) {
     // Route: Logout (ends session)
     elseif ($view === 'logout') {
         session_destroy(); // Destroy the current session
-        header("Location: /ecoBuddy/index.php?view=login"); // Redirect to the login page
+        header("Location: index.php?view=login"); // Redirect to the login page
         exit; // Stop further script execution
     }
     // Route: Browse facilities (general user)
@@ -72,7 +72,7 @@ if (isset($_GET['view'])) {
         elseif ($view === 'delete_facility' && isset($_GET['id'])) {
             $facilityId = (int)$_GET['id']; // Get the facility ID from the URL
             $facilityController->deleteFacility($facilityId); // Delete the facility by ID
-            header("Location: /ecoBuddy/index.php?view=dashboard"); // Redirect to the manager dashboard
+            header("Location: index.php?view=dashboard"); // Redirect to the manager dashboard
             exit; // Stop further script execution
         }
         // Route: Manager dashboard
@@ -121,7 +121,7 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':contributor' => (int)$_SESSION['user_id'], // Get contributor ID from session
         ];
         $facilityController->createFacility($data); // Create the facility
-        header("Location: /ecoBuddy/index.php?view=dashboard"); // Redirect to the dashboard
+        header("Location: index.php?view=dashboard"); // Redirect to the dashboard
         exit; // Stop further script execution
     }
     // Handle update facility form submission
@@ -142,7 +142,7 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':contributor' => (int)$_SESSION['user_id'], // Get the current user's ID
         ];
         $facilityController->updateFacility($id, $data); // Update the facility
-        header("Location: /ecoBuddy/index.php?view=dashboard"); // Redirect to the dashboard
+        header("Location: index.php?view=dashboard"); // Redirect to the dashboard
         exit; // Stop further script execution
     }
 }

@@ -18,7 +18,7 @@
                 </div>
                 <div class="card-body">
                     <!-- Form for user login -->
-                    <form method="POST" action="/ecoBuddy/index.php">
+                    <form method="POST" action="index.php">
                         <!-- Username Input Field -->
                         <div class="mb-3">
                             <label for="username" class="form-label">Username:</label>
@@ -43,7 +43,7 @@
 
             <!-- Additional Information Section -->
             <div class="text-center mt-3">
-                <p>Don’t have an account? Contact the administrator.</p> <!-- Message for users who need an account -->
+                <p>Don't have an account? Contact the administrator.</p> <!-- Message for users who need an account -->
             </div>
         </div>
     </div>

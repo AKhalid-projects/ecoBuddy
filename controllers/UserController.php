@@ -23,15 +23,15 @@ class UserController {
             // Store user information in session variables for the current session.
             $_SESSION['user_id'] = $user['id'];             // Store the user's ID.
             $_SESSION['username'] = $user['username'];       // Store the user's username.
-            $_SESSION['user_type'] = strtolower($user['role']); // Store the user's role in lowercase.
+            $_SESSION['user_type'] = $user['user_type'];
 
             // Redirect the user based on their role:
             // If the user is a manager, they are sent to the manager dashboard.
             // Otherwise, they are sent to the general browsing page.
-            if ($_SESSION['user_type'] === 'manager') {
-                header("Location: /ecoBuddy/index.php?view=dashboard"); // Manager's dashboard.
+            if ($user['user_type'] === 'manager') {
+                header("Location: index.php?view=dashboard"); // Manager's dashboard.
             } else {
-                header("Location: /ecoBuddy/index.php?view=browse");    // General user browsing page.
+                header("Location: index.php?view=browse");    // General user browsing page.
             }
             exit; // Ensure the script stops executing after the redirect.
         } else {
@@ -47,7 +47,7 @@ class UserController {
         // Destroys the current session, logging the user out.
         session_destroy();
         // Redirect the user to the login page.
-        header("Location: /ecoBuddy/index.php?view=login");
+        header("Location: index.php?view=login");
         exit; // Stop further execution after the redirect.
     }
 
