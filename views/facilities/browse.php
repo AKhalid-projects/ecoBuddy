@@ -41,15 +41,15 @@ $totalPages = ceil($total / $limit);
     <?php
     if (isset($_SESSION['username'])) {
         echo '<div class="alert alert-success">Welcome, ' . htmlspecialchars($_SESSION['username']) . '!</div>';
-        echo '<a href="/ecoBuddy/index.php?view=logout" class="btn btn-danger mb-3">Logout</a>';
+        echo '<a href="index.php?view=logout" class="btn btn-danger mb-3">Logout</a>';
     } else {
-        echo '<div class="alert alert-warning">You are not logged in. <a href="/ecoBuddy/index.php?view=login" class="alert-link">Login here</a>.</div>';
+        echo '<div class="alert alert-warning">You are not logged in. <a href="index.php?view=login" class="alert-link">Login here</a>.</div>';
         exit;
     }
     ?>
 
     <!-- Search Form -->
-    <form method="GET" action="/ecoBuddy/index.php" class="mb-4" id="searchForm">
+    <form method="GET" action="index.php" class="mb-4" id="searchForm">
         <input type="hidden" name="view" value="browse">
         <div class="row g-3 justify-content-center">
             <div class="col-md-6">
@@ -183,7 +183,7 @@ $totalPages = ceil($total / $limit);
     }
 
     // Load facilities from server and add markers
-    fetch('/ecoBuddy/index.php?view=facilities_json')
+    fetch('index.php?view=facilities_json')
         .then(response => response.json())
         .then(facilities => {
             facilities.forEach(facility => {
@@ -274,7 +274,7 @@ $totalPages = ceil($total / $limit);
         const location = document.getElementById('locationInput').value;
         const status = document.getElementById('statusSelect').value;
 
-        fetch(`/ecoBuddy/index.php?view=browse&search=${encodeURIComponent(search)}&category=${encodeURIComponent(category)}&location=${encodeURIComponent(location)}&status=${encodeURIComponent(status)}`)
+        fetch(`index.php?view=browse&search=${encodeURIComponent(search)}&category=${encodeURIComponent(category)}&location=${encodeURIComponent(location)}&status=${encodeURIComponent(status)}`)
             .then(response => response.text())
             .then(html => {
                 const parser = new DOMParser();

@@ -10,7 +10,7 @@
     <h1 class="text-center mb-4">Add New Eco Facility</h1>
 
     <!-- Form for adding a new facility -->
-    <form method="POST" action="/ecoBuddy/index.php" class="needs-validation" novalidate>
+    <form method="POST" action="index.php" class="needs-validation" novalidate>
         <input type="hidden" name="create_facility" value="1"> <!-- Hidden field to indicate form submission for creating a facility -->
 
         <!-- Title input field -->

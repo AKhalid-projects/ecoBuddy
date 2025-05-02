@@ -21,7 +21,7 @@
                     <p class="text-muted">It seems you've hit a broken link or entered an incorrect URL.</p> <!-- Additional info with muted (faded) text -->
 
                     <!-- Button to navigate back to the homepage -->
-                    <a href="/ecoBuddy/" class="btn btn-primary mt-3">
+                    <a href="index.php" class="btn btn-primary mt-3">
                         <i class="fas fa-home"></i> <!-- Home icon -->
                         Go to Homepage
                     </a>

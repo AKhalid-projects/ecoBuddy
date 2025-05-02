@@ -10,7 +10,7 @@
     <h1 class="text-center mb-4">Edit Facility</h1>
 
     <!-- Form for updating an existing facility -->
-    <form method="POST" action="/ecoBuddy/index.php" class="needs-validation" novalidate>
+    <form method="POST" action="index.php" class="needs-validation" novalidate>
         <!-- Hidden fields to store form identifiers -->
         <input type="hidden" name="update_facility" value="1"> <!-- Indicates that this is an update form -->
         <input type="hidden" name="id" value="<?php echo htmlspecialchars($facility['id']); ?>"> <!-- Facility ID -->

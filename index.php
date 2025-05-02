@@ -48,40 +48,45 @@ if (isset($_GET['view'])) {
         exit;
     }
     // Route: Manager-only views
-    elseif (isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'manager') {
-        // Route: Add new facility form
-        if ($view === 'add_facility') {
-            $categories = $facilityModel->getAllCategories(); // Get categories for the form
-            include './views/manager/add_facility.php'; // Include the add facility view
-        }
-        // Route: Edit facility form
-        elseif ($view === 'edit_facility' && isset($_GET['id'])) {
-            $facilityId = (int)$_GET['id']; // Convert the facility ID to an integer
-            $facility = $facilityModel->getFacilityById($facilityId); // Fetch the facility details by ID
-            if (!$facility) {
-                die("Facility with ID $facilityId not found."); // Display an error if the facility is not found
+    elseif (isset($_SESSION['user_type'])) {
+        // Debug: Log session values
+        error_log("Session user_type: " . print_r($_SESSION['user_type'], true));
+        
+        if (strtolower($_SESSION['user_type']) === 'manager') {
+            // Route: Add new facility form
+            if ($view === 'add_facility') {
+                $categories = $facilityModel->getAllCategories(); // Get categories for the form
+                include './views/manager/add_facility.php'; // Include the add facility view
             }
+            // Route: Edit facility form
+            elseif ($view === 'edit_facility' && isset($_GET['id'])) {
+                $facilityId = (int)$_GET['id']; // Convert the facility ID to an integer
+                $facility = $facilityModel->getFacilityById($facilityId); // Fetch the facility details by ID
+                if (!$facility) {
+                    die("Facility with ID $facilityId not found."); // Display an error if the facility is not found
+                }
 
-            $categories = $facilityModel->getAllCategories(); // Get categories for the dropdown
-            if (!$categories) {
-                die("No categories found in the database."); // Display an error if no categories are available
+                $categories = $facilityModel->getAllCategories(); // Get categories for the dropdown
+                if (!$categories) {
+                    die("No categories found in the database."); // Display an error if no categories are available
+                }
+                include './views/manager/edit_facility.php'; // Include the edit facility view
             }
-            include './views/manager/edit_facility.php'; // Include the edit facility view
-        }
-        // Route: Delete a facility
-        elseif ($view === 'delete_facility' && isset($_GET['id'])) {
-            $facilityId = (int)$_GET['id']; // Get the facility ID from the URL
-            $facilityController->deleteFacility($facilityId); // Delete the facility by ID
-            header("Location: index.php?view=dashboard"); // Redirect to the manager dashboard
-            exit; // Stop further script execution
-        }
-        // Route: Manager dashboard
-        elseif ($view === 'dashboard') {
-            $search = isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; // Get and sanitize search input
-            $category = isset($_GET['category']) ? htmlspecialchars($_GET['category']) : null; // Get category filter
-            $categories = $facilityModel->getAllCategories(); // Get categories for filtering
-            $facilities = $facilityController->browseFacilities($search, $category); // Get filtered facilities
-            include './views/manager/dashboard.php'; // Include the dashboard view
+            // Route: Delete a facility
+            elseif ($view === 'delete_facility' && isset($_GET['id'])) {
+                $facilityId = (int)$_GET['id']; // Get the facility ID from the URL
+                $facilityController->deleteFacility($facilityId); // Delete the facility by ID
+                header("Location: index.php?view=dashboard"); // Redirect to the manager dashboard
+                exit; // Stop further script execution
+            }
+            // Route: Manager dashboard
+            elseif ($view === 'dashboard') {
+                $search = isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; // Get and sanitize search input
+                $category = isset($_GET['category']) ? htmlspecialchars($_GET['category']) : null; // Get category filter
+                $categories = $facilityModel->getAllCategories(); // Get categories for filtering
+                $facilities = $facilityController->browseFacilities($search, $category); // Get filtered facilities
+                include './views/manager/dashboard.php'; // Include the dashboard view
+            }
         }
     }
     // Route: 404 - Page not found

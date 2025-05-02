@@ -23,12 +23,15 @@ class UserController {
             // Store user information in session variables for the current session.
             $_SESSION['user_id'] = $user['id'];             // Store the user's ID.
             $_SESSION['username'] = $user['username'];       // Store the user's username.
-            $_SESSION['user_type'] = $user['user_type'];
+            $_SESSION['user_type'] = $user['role'];          // Store the user's role
+
+            // Debug: Log the role value
+            error_log("User role: " . print_r($user['role'], true));
 
             // Redirect the user based on their role:
             // If the user is a manager, they are sent to the manager dashboard.
             // Otherwise, they are sent to the general browsing page.
-            if ($user['user_type'] === 'manager') {
+            if (strtolower($user['role']) === 'manager') {
                 header("Location: index.php?view=dashboard"); // Manager's dashboard.
             } else {
                 header("Location: index.php?view=browse");    // General user browsing page.
